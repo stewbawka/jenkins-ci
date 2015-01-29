@@ -1,0 +1,23 @@
+#build the db image to be used for this job, below uses mongo official image
+docker run -d --name test_mongo mongo
+
+#build the image to be used for this job
+IMAGE=$(docker build . | tail -1 | awk '{ print $NF }')
+
+#build the directory to be mounted into docker. 
+MNT="$WORKSPACE/.."
+
+#execute the build inside docker
+CONTAINER=$(docker run -d -v "$MNT:/opt/project" --link test_mongo:mongodb -e RAILS_ENV=test $IMAGE /bin/bash -c 'cd /opt/project/workspace && script/run_ci_build')
+
+#attach to the container so we can see the output
+docker attach $CONTAINER
+
+#get exit code
+RC=$(docker wait $CONTAINER)
+
+docker rm $CONTAINER
+docker stop test_mongo
+docker rm test_mongo
+
+exit $RC
