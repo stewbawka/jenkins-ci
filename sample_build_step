@@ -1,6 +1,12 @@
-docker stop $(docker ps -a | awk '/test_mongo/ {print $1}')
-docker rm $(docker ps -a | awk '/test_mongo/ {print $1}')
+#check if we have an old mongo container floating around
+OLD_MONGO=$(docker ps -a | grep test_mongo | awk -F" " '{print $1}')
+if [ -n "$OLD_MONGO" ]; then
+  docker stop $OLD_MONGO
+  docker rm $OLD_MONGO
+fi
+
 #build the db image to be used for this job, below uses mongo official image
+docker pull mongo
 docker run -d --name test_mongo mongo
 
 #build the image to be used for this job
@@ -10,7 +16,7 @@ IMAGE=$(docker build . | tail -1 | awk '{ print $NF }')
 MNT="$WORKSPACE/.."
 
 #execute the build inside docker
-CONTAINER=$(docker run -d -v "$MNT:/opt/project" --link test_mongo:mongodb -e RAILS_ENV=test $IMAGE /bin/bash -c 'cd /opt/project/workspace && script/run_ci_build')
+CONTAINER=$(docker run -d -v "$MNT:/opt/project" --link test_mongo:mongodb -e RAILS_ENV=test $IMAGE /bin/bash -c 'cd /opt/project/gotango && script/run_ci_build')
 
 #attach to the container so we can see the output
 docker attach $CONTAINER
@@ -23,3 +29,4 @@ docker stop test_mongo
 docker rm test_mongo
 
 exit $RC
+
