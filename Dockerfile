@@ -30,5 +30,5 @@ VOLUME /var/lib/docker
 
 EXPOSE 8080
 
-ENTRYPOINT [ "usr/local/bin/dockerjenkins.sh" ]
+CMD [ "usr/local/bin/dockerjenkins.sh" ]
 
