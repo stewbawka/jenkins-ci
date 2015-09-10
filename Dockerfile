@@ -21,6 +21,10 @@ ADD ./dockerjenkins.sh /usr/local/bin/dockerjenkins.sh
 ADD ./backupjenkins.sh /usr/local/bin/backupjenkins.sh
 RUN chmod +x /usr/local/bin/dockerjenkins.sh
 RUN chmod +x /usr/local/bin/backupjenkins.sh
+RUN crontab -l | { cat; echo "30 2 0 0 0 /user/local/bin/backupjenkins.sh"; } | crontab -
+RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+RUN unzip awscli-bundle.zip
+RUN ./awscli-bundle/install -b ~/bin/aws
 
 VOLUME /var/lib/docker
 
