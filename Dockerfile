@@ -29,8 +29,6 @@ RUN apt-get install -qqy unzip
 RUN unzip awscli-bundle.zip
 RUN ./awscli-bundle/install -b ~/bin/aws
 
-VOLUME /var/lib/docker
-
 EXPOSE 8080
 
 CMD [ "usr/local/bin/dockerjenkins.sh" ]
