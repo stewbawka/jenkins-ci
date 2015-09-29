@@ -13,10 +13,11 @@ docker run -d --name test_mongo mongo
 IMAGE=$(docker build . | tail -1 | awk '{ print $NF }')
 
 #build the directory to be mounted into docker. 
-MNT="$WORKSPACE/.."
+echo $WORKSPACE
+MNT="$WORKSPACE"
 
 #execute the build inside docker
-CONTAINER=$(docker run -d -v "$MNT:/opt/project" --link test_mongo:mongodb -e RAILS_ENV=test $IMAGE /bin/bash -c 'cd /opt/project/gotango && script/run_ci_build')
+CONTAINER=$(docker run -d --volumes-from=jenkins_data --link test_mongo:mongodb -e RAILS_ENV=test $IMAGE /bin/bash -c "cd $WORKSPACE && script/run_ci_build")
 
 #attach to the container so we can see the output
 docker attach $CONTAINER
@@ -29,4 +30,3 @@ docker stop test_mongo
 docker rm test_mongo
 
 exit $RC
-
