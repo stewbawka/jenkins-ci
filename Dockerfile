@@ -15,7 +15,7 @@ RUN for plugin in chucknorris greenballs scm-api git-client git ws-cleanup ;\
   do curl -sf -o $JENKINS_HOME/plugins/${plugin}.hpi \
     -L $JENKINS_MIRROR/plugins/${plugin}/latest/${plugin}.hpi ; done
 
-ADD ./backupjenkins.sh /usr/local/bin/dockerjenkins.sh
+ADD ./dockerjenkins.sh /usr/local/bin/dockerjenkins.sh
 ADD ./backupjenkins.sh /usr/local/bin/backupjenkins.sh
 RUN chmod +x /usr/local/bin/dockerjenkins.sh
 RUN chmod +x /usr/local/bin/backupjenkins.sh
