@@ -15,7 +15,9 @@ RUN for plugin in chucknorris greenballs scm-api git-client git ws-cleanup ;\
   do curl -sf -o $JENKINS_HOME/plugins/${plugin}.hpi \
     -L $JENKINS_MIRROR/plugins/${plugin}/latest/${plugin}.hpi ; done
 
+ADD ./backupjenkins.sh /usr/local/bin/dockerjenkins.sh
 ADD ./backupjenkins.sh /usr/local/bin/backupjenkins.sh
+RUN chmod +x /usr/local/bin/dockerjenkins.sh
 RUN chmod +x /usr/local/bin/backupjenkins.sh
 
 RUN crontab -l | { cat; echo "30 2 * * * /user/local/bin/backupjenkins.sh"; } | crontab -
@@ -27,5 +29,5 @@ RUN ./awscli-bundle/install -b ~/bin/aws
 
 EXPOSE 8080
 
-CMD [ "java -jar /opt/jenkins/jenkins.war" ]
+CMD [ "usr/local/bin/dockerjenkins.sh" ]
 
