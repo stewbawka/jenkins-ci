@@ -2,8 +2,10 @@ FROM phusion/baseimage
 MAINTAINER Stuart Wade <stewbawka@gmail.com>
 
 RUN apt-get update -qq && apt-get install -qqy curl
+RUN curl https://get.docker.com/gpg | apt-key add -
+RUN echo deb https://get.docker.com/ubuntu docker main > /etc/apt/sources.list.d/docker.list
 
-RUN apt-get update -qq && apt-get install -qqy iptables ca-certificates lxc openjdk-6-jdk git-core
+RUN apt-get update -qq && apt-get install -qqy iptables ca-certificates lxc openjdk-6-jdk git-core lxc-docker
 
 ENV JENKINS_HOME /opt/jenkins/data
 ENV JENKINS_MIRROR http://mirrors.jenkins-ci.org
